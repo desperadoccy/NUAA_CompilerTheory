@@ -1,0 +1,5 @@
+lex.yy.cc
+test.tab.c
+test.tab.h
+parser
+test
