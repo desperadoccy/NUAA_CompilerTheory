@@ -1,11 +1,11 @@
 %{
 #include <stdlib.h>
-#include "userdef.h"
+#include <stdio.h>
+#include <string.h>
+#include "node.h"
 
-int yylex(void);
+int yylex();
 void yyerror(char *);
-void debug_info(char *, int *, char *);
-void stm_info();
 
 extern varIndex strMem[256];
 int iMaxIndex=0;
