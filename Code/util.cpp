@@ -153,7 +153,7 @@ TreeNode* makehead(TreeNode *cur)
     }
   	else
     {
-      t->nodeKind=TProgram;
+      t->nodeKind=ProgramK;
       t->attr.Pro.cur=cur;
     }
   return t;
@@ -195,7 +195,7 @@ TreeNode* newVariableDeclarationNode(TreeNode *type_specifier,TreeNode *_var)
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TVariableDeclaration;
+      t->nodeKind = VariableDeclarationK;
       t->attr.varDecl.type_spec = type_specifier;
       t->attr.varDecl._var = _var;
     }
@@ -211,7 +211,7 @@ newArrayDeclarationNode(TreeNode *type_specifier,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TArrayDeclaration;
+      t->nodeKind = ArrayDeclarationK;
       t->attr.arrDecl.type_spec = type_specifier;
       t->attr.arrDecl._var = _var;
       t->attr.arrDecl._num = _num;
@@ -230,7 +230,7 @@ newFunctionDeclarationNode(TreeNode *type_specifier,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TFunctionDeclaration;
+      t->nodeKind = FunctionDeclarationK;
       t->attr.funcDecl.type_spec = type_specifier;
       t->attr.funcDecl._var = _var;
       t->attr.funcDecl.params = params;
@@ -247,7 +247,7 @@ newVariableParameterNode(TreeNode *type_specifier,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TVariableParameter;
+      t->nodeKind = VariableParameterK;
       t->attr.varParam.type_spec = type_specifier;
       t->attr.varParam._var = _var;
     }
@@ -262,7 +262,7 @@ newArrayParameterNode(TreeNode *type_specifier,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TArrayParameter;
+      t->nodeKind = ArrayParameterK;
       t->attr.arrParam.type_spec = type_specifier;
       t->attr.arrParam._var = _var;
     }
@@ -277,7 +277,7 @@ newCompoundStatementNode(TreeNode *local_declarations, // nullable
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TCompoundStatement;
+      t->nodeKind = CompoundStatementK;
       t->attr.cmpdStmt.local_decl = local_declarations;
       t->attr.cmpdStmt.stmt_list = statement_list;
     }
@@ -291,7 +291,7 @@ newExpressionStatementNode(TreeNode *expression) // nullable
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TExpressionStatement;
+      t->nodeKind = ExpressionStatementK;
       t->attr.exprStmt.expr = expression;
     }
 
@@ -306,7 +306,7 @@ newSelectionStatementNode(TreeNode *expression, // nullable
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TSelectionStatement;
+      t->nodeKind = SelectionStatementK;
       t->attr.selectStmt.expr = expression;
       t->attr.selectStmt.if_stmt = if_statement;
       t->attr.selectStmt.else_stmt = else_statement;
@@ -322,7 +322,7 @@ newIterationStatementNode(TreeNode *expression,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TIterationStatement;
+      t->nodeKind = IterationStatementK;
       t->attr.iterStmt.expr = expression;
       t->attr.iterStmt.loop_stmt = statement;
     }
@@ -336,7 +336,7 @@ newReturnStatementNode(TreeNode *expression) // nullable
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TReturnStatement;
+      t->nodeKind = ReturnStatementK;
       t->attr.retStmt.expr = expression;
     }
 
@@ -350,7 +350,7 @@ newAssignExpressionNode(TreeNode *var,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TAssignExpression;
+      t->nodeKind = AssignExpressionK;
       t->attr.assignStmt._var = var;
       t->attr.assignStmt.expr = expression;
     }
@@ -366,7 +366,7 @@ newComparisonExpressionNode(TreeNode *left_expression,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TComparisonExpression;
+      t->nodeKind = ComparisonExpressionK;
       t->attr.cmpExpr.lexpr = left_expression;
       t->attr.cmpExpr.op = relop;
       t->attr.cmpExpr.rexpr = right_expression;
@@ -383,7 +383,7 @@ newAdditiveExpressionNode(TreeNode *left_expression,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TAdditiveExpression;
+      t->nodeKind = AdditiveExpressionK;
       t->attr.addExpr.lexpr = left_expression;
       t->attr.addExpr.op = addop;
       t->attr.addExpr.rexpr = right_expression;
@@ -400,7 +400,7 @@ newMultiplicativeExpressionNode(TreeNode *left_expression,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TMultiplicativeExpression;
+      t->nodeKind = MultiplicativeExpressionK;
       t->attr.multExpr.lexpr = left_expression;
       t->attr.multExpr.op = mulop;
       t->attr.multExpr.rexpr = right_expression;
@@ -416,7 +416,7 @@ newArrayNode(TreeNode *_var,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TArray;
+      t->nodeKind = ArrayK;
       t->attr.arr._var = _var;
       t->attr.arr.arr_expr = expression;
     }
@@ -431,7 +431,7 @@ newCallNode(TreeNode *_var,
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TCall;
+      t->nodeKind = CallK;
       t->attr.call._var = _var;
       t->attr.call.expr_list = args;
     }
@@ -445,7 +445,7 @@ newVariableNode(char *_ID)
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      	t->nodeKind = TVariable;
+      	t->nodeKind = VariableK;
       	t->attr.ID = copyString(_ID);
     }
   return t;
@@ -457,7 +457,7 @@ newConstantNode(char *_NUM)
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TConstant;
+      t->nodeKind = ConstantK;
       t->attr.NUM = atoi(_NUM);
     }
 
@@ -470,7 +470,7 @@ newTokenTypeNode(TokenType token)
   TreeNode * t = allocateTreeNode();
   if (t != NULL)
     {
-      t->nodeKind = TTokenType;
+      t->nodeKind = TokenTypeK;
       t->attr.TOK = token;
     }
 
@@ -540,23 +540,23 @@ void printTree(TreeNode* tree,int cnt,int cl)
     {
       switch (tree->nodeKind)
         {
-        case TError:
+        case ErrorK:
         	printSpaces(cnt);
-          	fprintf(listing,"[DEBUG] TError at printTree\n");
+          	fprintf(listing,"[DEBUG] ErrorK at printTree\n");
           	break;
 		
-		case TProgram:
+		case ProgramK:
 			fprintf(listing,"starting\n");
 			printTree(tree->attr.Pro.cur,cnt,1);
 			fprintf(listing,"ended\n");
 			break;
 		
-        case TVariableDeclaration:
+        case VariableDeclarationK:
         	printTree(tree->attr.varDecl.type_spec,cnt,0);
           	printTree(tree->attr.varDecl._var,2,1);
           	break;
 
-        case TArrayDeclaration:
+        case ArrayDeclarationK:
           	printTree(tree->attr.arrDecl.type_spec,cnt,0);
           	printTree(tree->attr.arrDecl._var,2,0);
           	fprintf(listing,"[");
@@ -564,37 +564,37 @@ void printTree(TreeNode* tree,int cnt,int cl)
           	fprintf(listing,"]\n");
           	break;
 
-        case TFunctionDeclaration:
+        case FunctionDeclarationK:
           	printTree(tree->attr.funcDecl.type_spec,cnt,0);
           	printTree(tree->attr.funcDecl._var,2,1);
           	printTree(tree->attr.funcDecl.params,cnt+2,1);
           	printTree(tree->attr.funcDecl.cmpd_stmt,cnt+2,1);
           	break;
 
-        case TVariableParameter:
+        case VariableParameterK:
           	printTree(tree->attr.varParam.type_spec,cnt,0);
           	fprintf(listing,"  (");
           	printTree(tree->attr.varParam._var,0,0);
           	fprintf(listing,")\n");
           break;
 
-        case TArrayParameter:
+        case ArrayParameterK:
           printTree(tree->attr.arrParam.type_spec,cnt,0);
           fprintf(listing,"  (");
           printTree(tree->attr.arrParam._var,0,0);
           fprintf(listing,"[])\n");
           break;
 
-        case TCompoundStatement:
+        case CompoundStatementK:
           	printTree(tree->attr.cmpdStmt.local_decl,cnt,1);
           	printTree(tree->attr.cmpdStmt.stmt_list,cnt,1);
           	break;
 
-        case TExpressionStatement:
+        case ExpressionStatementK:
           	printTree(tree->attr.exprStmt.expr,cnt,1);
           	break;
 
-        case TSelectionStatement:
+        case SelectionStatementK:
         	printSpaces(cnt);
 			fprintf(listing,"Selection\n");
           	printTree(tree->attr.selectStmt.expr,cnt+2,1);
@@ -602,73 +602,73 @@ void printTree(TreeNode* tree,int cnt,int cl)
           	printTree(tree->attr.selectStmt.else_stmt,cnt+2,1);
           	break;
 
-        case TIterationStatement:
+        case IterationStatementK:
           	printSpaces(cnt);
 			fprintf(listing,"While\n");
           	printTree(tree->attr.iterStmt.expr,cnt+2,1);
           	printTree(tree->attr.iterStmt.loop_stmt,cnt+2,1);
           break;
 
-        case TReturnStatement:
+        case ReturnStatementK:
           	printSpaces(cnt);
 			fprintf(listing,"Return\n");
          	printTree(tree->attr.retStmt.expr,cnt+2,1);
          	break;
 
-        case TAssignExpression:
+        case AssignExpressionK:
           	printSpaces(cnt);
           	fprintf(listing,"=\n");
           	printTree(tree->attr.assignStmt._var,cnt+2,1);
           	printTree(tree->attr.assignStmt.expr,cnt+2,1);
           	break;
 
-        case TComparisonExpression:
+        case ComparisonExpressionK:
           	printTree(tree->attr.cmpExpr.op,cnt,1);
           	printTree(tree->attr.cmpExpr.lexpr,cnt+2,1);
           	printTree(tree->attr.cmpExpr.rexpr,cnt+2,1);
           	break;
 
-        case TAdditiveExpression:
+        case AdditiveExpressionK:
           	printTree(tree->attr.addExpr.op,cnt,1);
          	printTree(tree->attr.addExpr.lexpr,cnt+2,1);
           	printTree(tree->attr.addExpr.rexpr,cnt+2,1);
           	break;
 
-        case TMultiplicativeExpression:
+        case MultiplicativeExpressionK:
           	printTree(tree->attr.multExpr.op,cnt,1);
           	printTree(tree->attr.multExpr.lexpr,cnt+2,1);
           	printTree(tree->attr.multExpr.rexpr,cnt+2,1);
           	break;
 
-        case TVariable:
+        case VariableK:
         	printSpaces(cnt);
           	fprintf(listing,"%s", tree->attr.ID);
           	if(cl)
           		fprintf(listing,"\n");
           	break;
 
-        case TArray:
+        case ArrayK:
         	printSpaces(cnt);
         	fprintf(listing,"Array_ele\n");
           	printTree(tree->attr.arr._var,cnt+2,1);
           	printTree(tree->attr.arr.arr_expr,cnt+2,1);
           	break;
 
-        case TCall:
+        case CallK:
         	printSpaces(cnt);
           	fprintf(listing,"Call\n");
           	printTree(tree->attr.call._var,cnt+2,1);
           	printTree(tree->attr.call.expr_list,cnt+4,1);
           	break;
 
-        case TConstant:
+        case ConstantK:
         	printSpaces(cnt);
           	fprintf(listing,"%d", tree->attr.NUM);
           	if(cl)
           		fprintf(listing,"\n");
           	break;
 
-        case TTokenType:
+        case TokenTypeK:
         	printSpaces(cnt);
         	fprintf(listing,"%s",operatorString(tree->attr.TOK));
         	if(cl)

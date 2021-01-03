@@ -1,5 +1,1 @@
-lex.yy.c
-test.tab.c
-test.tab.h
-parser
-test
+Code/parser

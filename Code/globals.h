@@ -31,40 +31,40 @@ extern int lineno;
 /**************************************************/
 
 typedef enum {
-    TError,
+    ErrorK,
 	
-	TProgram, 
-    TVariableDeclaration,
-    TArrayDeclaration,
-    TFunctionDeclaration,
+	ProgramK, 
+    VariableDeclarationK,
+    ArrayDeclarationK,
+    FunctionDeclarationK,
 
-    TVariableParameter,
-    TArrayParameter,
+    VariableParameterK,
+    ArrayParameterK,
 
-    TCompoundStatement,
-    TExpressionStatement,
-    TSelectionStatement,
-    TIterationStatement,
-    TReturnStatement,
+    CompoundStatementK,
+    ExpressionStatementK,
+    SelectionStatementK,
+    IterationStatementK,
+    ReturnStatementK,
 
-    TAssignExpression,
-    TComparisonExpression,
-    TAdditiveExpression,
-    TMultiplicativeExpression,
+    AssignExpressionK,
+    ComparisonExpressionK,
+    AdditiveExpressionK,
+    MultiplicativeExpressionK,
 
-    TVariable,
-    TArray,
-    TCall,
+    VariableK,
+    ArrayK,
+    CallK,
 
-    TConstant,
-    TTokenType,
+    ConstantK,
+    TokenTypeK,
 } NodeKind;
 
 //llvm::Values * codegen(treeNode *node)
 //{
 //	switch(node->nodeKind)
 //	{
-//		case TVariableDeclaration : 
+//		case VariableDeclarationK : 
 //		
 //	}
 //}
@@ -75,27 +75,27 @@ typedef struct treeNode {
   NodeKind nodeKind;
 
   union {
-  	//TProgram
+  	//ProgramK
   	struct
   	{
   		struct treeNode *cur;	
 	} Pro;
   	
   	
-      // TVariableDeclaration
+      // VariableDeclarationK
       struct {
           struct treeNode *type_spec;
           struct treeNode *_var;
       } varDecl;
 
-      // TArrayDeclaration
+      // ArrayDeclarationK
       struct {
           struct treeNode *type_spec;
           struct treeNode *_var;
           struct treeNode *_num;
       } arrDecl;
 
-      // TFunctionDeclaration
+      // FunctionDeclarationK
       struct {
           struct treeNode *type_spec;
           struct treeNode *_var;
@@ -103,99 +103,99 @@ typedef struct treeNode {
           struct treeNode *cmpd_stmt;
       } funcDecl;
 
-      // TVariableParameter
+      // VariableParameterK
       struct {
           struct treeNode *type_spec;
           struct treeNode *_var;
       } varParam;
 
-      // TArrayParameter
+      // ArrayParameterK
       struct {
           struct treeNode *type_spec;
           struct treeNode *_var;
       } arrParam;
       
-      // TCompoundStatement
+      // CompoundStatementK
       struct {
           struct treeNode *local_decl;
           struct treeNode *stmt_list;
           //ExpType retType;
       } cmpdStmt;
 
-      // TExpressionStatement
+      // ExpressionStatementK
       struct {
           struct treeNode *expr;
       } exprStmt;
 
-      // TSelectionStatement
+      // SelectionStatementK
       struct {
           struct treeNode *expr;
           struct treeNode *if_stmt;
           struct treeNode *else_stmt;
       } selectStmt;
 
-      // TIterationStatement
+      // IterationStatementK
       struct {
           struct treeNode *expr;
           struct treeNode *loop_stmt;
       } iterStmt;
 
-      // TReturnStatement
+      // ReturnStatementK
       struct {
           struct treeNode *expr;
           //ExpType retType;
       } retStmt;
 
-      // TAssignExpression
+      // AssignExpressionK
       struct {
           struct treeNode *expr;
           struct treeNode *_var;
       } assignStmt;
 
-      // TComparisonExpression
+      // ComparisonExpressionK
       struct {
           struct treeNode *lexpr;
           struct treeNode *op;
           struct treeNode *rexpr;
       } cmpExpr;
 
-      // TAdditiveExpression
+      // AdditiveExpressionK
       struct {
           struct treeNode *lexpr;
           struct treeNode *op;
           struct treeNode *rexpr;
       } addExpr;
 
-      // TMultiplicativeExpression
+      // MultiplicativeExpressionK
       struct {
           struct treeNode *lexpr;
           struct treeNode *op;
           struct treeNode *rexpr;
       } multExpr;
 
-      // TArray
+      // ArrayK
       struct {
           struct treeNode *_var;
           struct treeNode *arr_expr;
       } arr;
 
-      // TCall
+      // CallK
       struct {
           struct treeNode *_var;
           struct treeNode *expr_list;
       } call;
 
-      // TVariable
+      // VariableK
       struct {
           char *ID;
       };
 
-      // TConstant
+      // ConstantK
       struct {
           int NUM;
       };
 
-      // TTokenType
+      // TokenTypeK
       struct {
           TokenType TOK;
       };

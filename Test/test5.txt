@@ -1,0 +1,19 @@
+void main(void)
+{
+
+	int x;
+	int div;
+      	int  rem;
+ 
+	x = 123456;
+
+      	while (x > 0)
+     	{
+           div = x/10;
+	   rem = x-(div*10);
+           output(rem);
+	   x = div;
+      	}
+}
+
+/*6 5 4 3 2 1*/

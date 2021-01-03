@@ -1,0 +1,39 @@
+int gethun(int cur)
+{
+	return cur/100;	
+}
+
+int getten(int cur,int hun)
+{
+	int tmp;
+	tmp = cur-hun*100;
+	return tmp/10;
+}
+
+int getone(int cur,int hun,int ten)
+{
+	int tmp;
+	tmp = cur-hun*100;
+	tmp = tmp - ten*10;
+	return tmp;
+}
+
+
+int main(void)
+{
+	int cur;
+	cur = 100;
+	while(cur<1000)
+	{
+		int i;
+		int j;
+		int k;
+		i=gethun(cur);
+		j=getten(cur,i);
+		k=getone(cur,i,j);
+		if(i*i*i+j*j*j+k*k*k==cur)
+			output(cur);
+		cur=cur+1;
+	}
+	return 0;
+}

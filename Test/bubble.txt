@@ -1,0 +1,43 @@
+
+void main(void)
+{
+	int i;
+	int max;
+	int a[10];
+	a[0]=7;
+	a[1]=13;
+	a[2]=3;
+	a[3]=0;
+	a[4]=7;
+	a[5]=21;
+	a[6]=1;
+	a[7]=8;
+	
+	max=7;
+	i=0;
+	while(i<max)
+	{
+		int j;
+		j=0;
+		while(j<max-i)
+		{
+			if(a[j]>a[j+1])
+			{
+				int tmp;
+				tmp = a[j];
+				a[j]=a[j+1];
+				a[j+1]=tmp;
+			}
+			j=j+1;
+		}
+		i=i+1;	
+	}
+	i=0;
+	while(i<=max)
+	{
+		output(a[i]);
+		i=i+1;
+	}
+}
+
+

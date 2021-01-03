@@ -8,11 +8,11 @@
 using namespace std;
 
 class CodeGenContext;
-Function *realmain;		//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mainï¿½ï¿½ï¿½ï¿½
-Function *curfc;		//ï¿½ï¿½Â¼ï¿½ï¿½Ç°ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-int manum = 0;			//Ô´ï¿½ï¿½ï¿½ë¶¨ï¿½ï¿½mainï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½
+Function *realmain;		//¼ÇÂ¼ÕæÕýµÄmainº¯Êý
+Function *curfc;		//¼ÇÂ¼µ±Ç°ÔÚÄÄ¸öº¯Êý¶¨ÒåÄÚ
+int manum = 0;			//Ô´´úÂë¶¨Òåmainº¯ÊýµÄ¸öÊý
 IRBuilder<> builder(MyContext);
-BasicBlock *curret;		//ï¿½ï¿½Â¼ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½exitï¿½ï¿½
+BasicBlock *curret;		//¼ÇÂ¼µ±Ç°º¯ÊýµÄexit¿é
 
 Value* codegen(TreeNode *cur, CodeGenContext& context);
 
@@ -49,7 +49,7 @@ void CodeGenContext::generateCode(TreeNode* root)
 
 /* Executes the AST by running the main function */
 GenericValue CodeGenContext::runCode() {
-	if (manum != 1)			//ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½mainï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½ï¿½
+	if (manum != 1)			//¼ì²âÔ´´úÂëmainº¯ÊýÓÐÃ»ÓÐ¶¨Òå»òÕßÖØ¶¨Òå
 	{
 		std::cout << "Main function ilegal!\n";
 		exit(0);
@@ -58,12 +58,12 @@ GenericValue CodeGenContext::runCode() {
 	ExecutionEngine *ee = EngineBuilder( unique_ptr<Module>(module) ).create();
 	ee->finalizeObject();
 	vector<GenericValue> noargs;
-	GenericValue v = ee->runFunction(realmain, noargs);		//ï¿½ï¿½ï¿½ï¿½Çµï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mainï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼Ö´ï¿½Ð´ï¿½ï¿½ï¿½
+	GenericValue v = ee->runFunction(realmain, noargs);		//ÕâÀï¼ÇµÃÒª´ÓÕæÕýµÄmainº¯Êý¿ªÊ¼Ö´ÐÐ´úÂë
 	std::cout << "Code was run.\n";
 	return v;
 }
 
-//ï¿½ï¿½ï¿½Øµï¿½Ç°ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//·µ»Øµ±Ç°½ÚµãµÄÊý¾ÝÀàÐÍ
 static Type *typeOf(TreeNode* type_spec) 
 {
 	if(type_spec->attr.TOK==INT)
@@ -81,11 +81,11 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 	{
 		return NULL;
 	}
-	switch (cur->nodeKind)		//ï¿½Ô²ï¿½Í¬ï¿½Ä½Úµï¿½Òªï¿½Ã²ï¿½Í¬ï¿½Ä¹ï¿½ï¿½ì·½ï¿½ï¿½
+	switch (cur->nodeKind)		//¶Ô²»Í¬µÄ½ÚµãÒªÓÃ²»Í¬µÄ¹¹Ôì·½·¨
 	{
-	case TProgram:
+	case ProgramK:
 	{
-		//Ö®ï¿½ï¿½ï¿½Ô¶à¶¨ï¿½ï¿½Ò»ï¿½ï¿½TProgramï¿½ï¿½ï¿½Í£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Í¬ï¿½Ú¸ï¿½ï¿½ï¿½ï¿½ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È«ï¿½Ö±ï¿½ï¿½ï¿½ï¿½Íºï¿½ï¿½ï¿½ï¿½Ä½ï¿½ï¿½æ¶¨ï¿½ï¿½
+		//Ö®ËùÒÔ¶à¶¨ÒåÒ»¸öProgramKÀàÐÍ£¬¾ÍÊÇÒòÎªËû²»Í¬ÓÚ¸´ºÏÓï¾ä£¬ËüÔÊÐíÈ«¾Ö±äÁ¿ºÍº¯ÊýµÄ½»Ìæ¶¨Òå
 		TreeNode *head = cur->attr.Pro.cur;
 		Value *last = NULL;
 		while (head != NULL)
@@ -95,9 +95,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		}
 		return last;
 	}
-	case TVariableDeclaration:
+	case VariableDeclarationK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¹ï¿½ï¿½Ì£ï¿½ï¿½È¼ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Ø¶ï¿½ï¿½å£¬È»ï¿½ï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Õ¼ä¼´ï¿½É£ï¿½ï¿½ÇµÃ·ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½
+		//¶¨Òå±äÁ¿µÄ¹ý³Ì£ºÏÈ¼ì²âÓÐÃ»ÓÐÖØ¶¨Òå£¬È»ºóµ÷ÓÃAPIÉêÇëÒ»¸ö¿Õ¼ä¼´¿É£¬¼ÇµÃ·ÅÈë·ûºÅ±í
 		std::cout<<"Creating variable declaration ";
 		string tmp;
 		if (cur->attr.varDecl.type_spec->attr.TOK == INT)
@@ -112,19 +112,19 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		}
 		std::cout<<" "<< cur->attr.varDecl._var->attr.ID<<'\n';
 		string curname = cur->attr.varDecl._var->attr.ID;
-		if (context.locals().find(curname) != context.locals().end())	//ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½
+		if (context.locals().find(curname) != context.locals().end())	//¼ì²âÓÐÃ»ÓÐ±»¶¨Òå
 		{
 			std::cout << "Variable has existed!\n";
 			exit(0);
 		}
 		AllocaInst *alloc = new AllocaInst(typeOf(cur->attr.varDecl.type_spec), 8, tmp, context.currentBlock());
-		context.locals()[curname] = alloc;		//ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å±ï¿½
+		context.locals()[curname] = alloc;		//¼ÇÂ¼ÏÂÀ´ÉêÇëµÄµØÖ·£¬·ÅÈë·ûºÅ±í
 		return alloc;
 	}
-	case TArrayDeclaration:
+	case ArrayDeclarationK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½å£¬ï¿½ï¿½ï¿½ï¿½Òª×¢ï¿½ï¿½APIï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÍµÄ£ï¿½
-		//ï¿½ï¿½Òªï¿½à´«ï¿½Ý±ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½Ä±ï¿½ï¿½ï¿½
+		//Êý×éµÄ¶¨Òå¸ß¶ÈÀàËÆÓÚ±äÁ¿¶¨Òå£¬µ«ÊÇÒª×¢ÒâAPIµ÷ÓÃÊ±£¬¹¹Ôìº¯ÊýÒªµ÷ÓÃÊý×éÀàÐÍµÄ£¬
+		//ÐèÒª¶à´«µÝ±íÃ÷Ò»¸öÊý×é´óÐ¡µÄ±äÁ¿
 		std::cout << "Creating array declaration ";
 		string tmp;
 		
@@ -145,30 +145,30 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 			std::cout << "array has existed!\n";
 			exit(0);
 		}
-		//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ttï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½Ê¾Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä´ï¿½Ð¡
+		//´´½¨Ò»¸öÁÙÊ±±êÁ¿tt£¬ÓÃÓÚ±íÊ¾Òª´´½¨µÄÊý×éµÄ´óÐ¡
 		Value * tt = ConstantInt::get(Type::getInt64Ty(MyContext), cur->attr.arrDecl._num->attr.NUM, true);
 		AllocaInst *alloc = new AllocaInst(typeOf(cur->attr.varDecl.type_spec), 8, tt, tmp, context.currentBlock());
 		context.locals()[curname] = alloc;
 		return alloc;
 	}
-	case TFunctionDeclaration:
+	case FunctionDeclarationK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä²ï¿½ï¿½Ö±È½Ï¸ï¿½ï¿½Ó£ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½Ò´ï¿½ï¿½ÝºÜ¶ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½
+		//º¯Êý¶¨ÒåµÄ²¿·Ö±È½Ï¸´ÔÓ£¬ÐèÒªµ÷ÓÃAPI²¢ÇÒ´«µÝºÜ¶àÊý¾Ý¡£
 		vector<Type*> argTypes;
 		TreeNode *head;
 		TreeNode *tmp;
 		vector<TreeNode *> mknew;
 		mknew.clear();
 		head = cur->attr.funcDecl.params;
-		//ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×°ï¿½ï¿½Ò»ï¿½ï¿½vectorï¿½ï£¬ï¿½ï¿½ÎªÒ»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//Ê×ÏÈÒª½«²ÎÊýµÄÀàÐÍ¼ÇÂ¼ÏÂÀ´£¬×°ÔÚÒ»¸övectorÀï£¬×÷ÎªÒ»¸ö²ÎÊý
 		while (head != NULL)
 		{
 			std::cout << "Creating function parm type\n";
 			argTypes.push_back(typeOf(head->attr.varParam.type_spec));
-			//ï¿½ï¿½ï¿½ï¿½ÎªÃ¿Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½Í¸ï¿½Îªï¿½Ë±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÒªï¿½Úµï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½Îªï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð©ï¿½ï¿½ï¿½ï¿½ï¿½Úºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½Ç¿ï¿½ï¿½Ãµï¿½
+			//ÕâÀïÎªÃ¿Ò»¸ö²ÎÊýÐÂ½¨ÁËÒ»¸ö¸±±¾£¬²¢ÇÒ½«Æä½ÚµãÀàÐÍ¸ÄÎªÁË±äÁ¿ÉùÃ÷
+			//ÕâÊÇÒòÎªÒªÔÚµ±Ç°º¯ÊýÌåÄÚ£¬ÎªÕâÐ©²ÎÊýÉêÇë¿Õ¼ä£¬ÕâÑùÕâÐ©²ÎÊýÔÚº¯ÊýÌåÄÚ²ÅÊÇ¿ÉÓÃµÄ
 			tmp = new TreeNode;
-			tmp->nodeKind = TVariableDeclaration;
+			tmp->nodeKind = VariableDeclarationK;
 			tmp->attr.varDecl.type_spec = head->attr.varParam.type_spec;
 			tmp->attr.varDecl._var = head->attr.varParam._var;
 			mknew.push_back(tmp);
@@ -176,12 +176,12 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		}
 		string fname = cur->attr.funcDecl._var->attr.ID;
 		string paname;
-		//ï¿½ï¿½ï¿½ï°´ï¿½Õ²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½Ò´ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÕâÀï°´ÕÕ²½Öèµ÷ÓÃAPI²¢ÇÒ´«µÝÏàÓ¦²ÎÊý¼´¿É
 		FunctionType *ftype = FunctionType::get(typeOf(cur->attr.funcDecl.type_spec), makeArrayRef(argTypes), false);
 		Function *function = Function::Create(ftype, GlobalValue::InternalLinkage, fname.c_str(), context.module);
 		BasicBlock *bblock = BasicBlock::Create(MyContext, "entry", function, 0);
-		//ï¿½ï¿½ï¿½ï¶¨ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½exitï¿½é£¬ï¿½ï¿½Îªï¿½Ë½ï¿½ï¿½returnÖ¸ï¿½î²»ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½bug
-		//ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½returnï¿½ï¿½ä¶¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½È«ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½exitï¿½é£¬ï¿½ï¿½ï¿½É½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÕâÀï¶¨ÒåÁËÒ»¸öexit¿é£¬ÊÇÎªÁË½â¾öreturnÖ¸Áî²»Æð×÷ÓÃµÄbug
+		//½«ËùÓÐµÄreturnÓï¾ä¶¼·­Òë³ÉÎÞÌõ¼þÌø×ª£¬È«²¿Ìø×ªµ½exit¿é£¬¼´¿É½â¾öÎÊÌâ
 		BasicBlock *eblock = BasicBlock::Create(MyContext, "exit", function, 0);
 		curfc = function;
 		curret = eblock;
@@ -194,7 +194,7 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		builder.SetInsertPoint(bblock);
 		context.pushBlock(bblock);
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Åºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½ï¿½Ö´ï¿½ï¿½Ê±ï¿½Ä¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ
+		//¶¨ÒåÁÙÊ±´æ·Åº¯Êý·µ»ØÖµµÄ±äÁ¿£¬ÓÃÀ´¸ù¾Ý³ÌÐòÖ´ÐÐÊ±µÄ¾ßÌåÇé¿ö£¬À´¾ö¶¨·µ»ØÖµ
 		AllocaInst *alloc;
 		string rret = "this_will_never_been_used";
 		if (typeOf(cur->attr.funcDecl.type_spec) == Type::getInt64Ty(MyContext))
@@ -205,7 +205,7 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 
 		Function::arg_iterator argsValues = function->arg_begin();
 		Value* argumentValue;
-		//Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¼ä£¬ï¿½ï¿½Òªï¿½Çµï¿½ï¿½Í·Åµï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
+		//Îª²ÎÊýÉêÇë¿Õ¼ä£¬²¢Òª¼ÇµÃÊÍ·ÅµôÁÙÊ±±äÁ¿
 		vector<TreeNode *>::iterator it;
 		for (it = mknew.begin(); it != mknew.end(); it++) 
 		{
@@ -221,7 +221,7 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		mknew.clear();
 		codegen(cur->attr.funcDecl.cmpd_stmt,context);
 
-		//ï¿½ï¿½ï¿½ï¿½returnï¿½ï¿½ä£¬ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Äµï¿½ï¿½Ã¹ï¿½ï¿½ï¿½
+		//¹¹ÔìreturnÓï¾ä£¬´Ó¶øÍê³ÉÒ»¸öº¯ÊýµÄµ÷ÓÃ¹¦ÄÜ
 		builder.CreateBr(eblock);
 		if (typeOf(cur->attr.funcDecl.type_spec) == Type::getInt64Ty(MyContext))
 		{
@@ -235,9 +235,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		std::cout << "Created function: " << cur->attr.funcDecl._var->attr.ID << '\n';
 		return function;
 	}
-	case TCompoundStatement:
+	case CompoundStatementK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ë£¬ï¿½ï¿½ï¿½ï¿½Úµï¿½Ö»ï¿½ÇµÝ¹ï¿½Ä½ï¿½ï¿½Ú²ï¿½ï¿½Úµï¿½codegenï¿½ï¿½ï¿½ï¿½
+		//¸´ºÏÓï¾äµÄ·­Òë£¬Õâ¸ö½ÚµãÖ»ÊÇµÝ¹éµÄ½«ÄÚ²¿½Úµãcodegen¼´¿É
 		TreeNode* head = cur->attr.cmpdStmt.local_decl;
 		Value *last = NULL;
 		while (head != NULL)
@@ -254,51 +254,51 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		}
 		return last;
 	}
-	case TExpressionStatement:
+	case ExpressionStatementK:
 	{
 		std::cout << "Creating code for expression\n";
 		return codegen(cur->attr.exprStmt.expr,context);
 	}
-	case TSelectionStatement:
+	case SelectionStatementK:
 	{
-		//Ñ¡ï¿½ï¿½á¹¹ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½á¹¹ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ï¿½ï¿½ÒªË¼ï¿½ï¿½ï¿½ÄµØ·ï¿½ï¿½ï¿½Ò²ï¿½ï¿½ï¿½Ñµï¿½
-		//ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½LLVM IRï¿½Ä½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½î¡£
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë¼Â·ï¿½Í²ï¿½ï¿½ï¿½×¢ï¿½ï¿½ï¿½ï¿½×¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½×¢ï¿½ï¿½
+		//Ñ¡Ôñ½á¹¹ÓëÑ­»·½á¹¹ÊÇ×ª»»¹ý³ÌµÄÐèÒªË¼¿¼µÄµØ·½£¬Ò²ÊÇÄÑµã
+		//ÐèÒªÀí½âLLVM IRµÄ½á¹¹£¬²¢ÇÒÀí½â»ù±¾¿éµÄ¸ÅÄî¡£
+		//¾ßÌåµÄÉè¼ÆË¼Â·¾Í²»ÔÚ×¢ÊÍÖÐ×¸Êö£¬ÕâÀïÎª¼¸¸ö¿é¼äµÄÌø×ª¼ÓÉÏ×¢ÊÍ
 		std::cout << "Creating code for IF ELSE\n";
 		Value *cond = codegen(cur->attr.selectStmt.expr, context);
 		Type * condty = cond->getType();
 		if (condty->isIntegerTy())
 		{
-			//ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ a = b+1ï¿½ï¿½ï¿½Ö£ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Intï¿½ï¿½Òªï¿½ï¿½Ó³ï¿½äµ½Bool
+			//Èç¹ûÅÐ¶ÏÌõ¼þÊÇÀàËÆÓÚ a = b+1ÕâÖÖ£¬·µ»ØÖµÊÇInt£¬ÒªÏÈÓ³Éäµ½Bool
 			cond = builder.CreateIntCast(cond, Type::getInt64Ty(MyContext), true);
 			cond = builder.CreateICmpNE(cond, ConstantInt::get(Type::getInt64Ty(MyContext), 0, true));
 		}
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ÎªÊµï¿½ï¿½IF ELSEï¿½á¹¹ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½äº¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
+		//¶¨ÒåÈý¸ö»ù±¾¿é£¬ÎªÊµÏÖIF ELSE½á¹¹×ö×¼±¸£¬Æäº¬ÒåÓëÃüÃûÒ»ÖÂ
 		BasicBlock * ifthen = BasicBlock::Create(MyContext, "ifthen", curfc);
 		BasicBlock * elsethen = BasicBlock::Create(MyContext, "elsethen", curfc);
 		BasicBlock * merge = BasicBlock::Create(MyContext, "merge", curfc);
 		
-		//IFï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//IFÓï¾äºó ÓÉÅÐ¶ÏÌõ¼þ¾ö¶¨Ö´ÐÐÄÄ¸ö»ù±¾¿é
 		builder.CreateCondBr(cond, ifthen, elsethen);
 
-		//IF thenï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//IF then»ù±¾¿é
 		builder.SetInsertPoint(ifthen);
 		context.pushBlock(ifthen);
 		codegen(cur->attr.selectStmt.if_stmt, context);
-		//ï¿½ï¿½ï¿½Çµï¿½Ò»ï¿½ï¿½ÒªÖ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mergeï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ï¿½else thenï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//×îºó¼ÇµÃÒ»¶¨ÒªÖ±½ÓÌøµ½merge¿é£¬·ñÔò»áÖ´ÐÐelse then£¬Ôì³ÉÓïÒå´íÎó
 		builder.CreateBr(merge);
 		context.popBlock();
 
-		//else then ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//else then »ù±¾¿é
 		builder.SetInsertPoint(elsethen);
 		context.pushBlock(elsethen);
 		codegen(cur->attr.selectStmt.else_stmt, context);
 		builder.CreateBr(merge);
 		context.popBlock();
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªmergeï¿½ï¿½Ì³ï¿½Ö´ï¿½ï¿½IFï¿½ï¿½ï¿½Ç°ï¿½Ä·ï¿½ï¿½Å±ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½Ö´ï¿½ï¿½IFï¿½ï¿½ï¿½Ç°ï¿½ï¿½Ä¿ï¿½ï¿½Ü¹ï¿½ï¿½ï¿½ï¿½ï¿½
-		//Í¬Ò»ï¿½Ý·ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//ÕâÀïÊÇÎªmerge¿é¼Ì³ÐÖ´ÐÐIFÓï¾äÇ°µÄ·ûºÅ±í£¬Ê¹µÃÖ´ÐÐIFÓï¾äÇ°ºóµÄ¿éÄÜ¹»¹²ÓÃ
+		//Í¬Ò»·Ý·ûºÅ±í£¬ÕâÑù²Å·ûºÏÓïÒå
 		std::map<std::string, Value*> nowloc = context.locals();
 		Value* nowret = context.getCurrentReturnValue();
 		context.popBlock();
@@ -306,17 +306,17 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		builder.SetInsertPoint(merge);
 		return nowret;
 	}
-	case TIterationStatement:
+	case IterationStatementK:
 	{
-		//WHILEï¿½ï¿½ï¿½Ä·ï¿½ï¿½ë£¬ï¿½ï¿½DXÍ¬Ñ§ï¿½ï¿½ï¿½ï¿½ï¿½Ñ£ï¿½ï¿½ï¿½ÊµWHILEï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½ï¿½continueï¿½ï¿½breakï¿½ì³£ï¿½Ä¼ï¿½
-		//Ö»ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½É£ï¿½Ò»ï¿½ï¿½Ö¸ï¿½ï¿½wlï¿½é£¬Ò»ï¿½ï¿½Ö¸ï¿½ï¿½mergeï¿½é¼´ï¿½ï¿½
-		//ï¿½ï¿½É¹ï¿½ï¿½ï¿½
+		//WHILEÓï¾äµÄ·­Òë£¬ÊÜDXÍ¬Ñ§µÄÌáÐÑ£¬ÆäÊµWHILEÓï¾äÀïÊµÏÖcontinueºÍbreakÒì³£µÄ¼òµ¥
+		//Ö»ÐèÒª½«ÕâÁ½¾ä·Ö±ð·­Òë³ÉÁ½¸öÎÞÌõ¼þÌø×ª¼´¿É£¬Ò»¸öÖ¸Ïòwl¿é£¬Ò»¸öÖ¸Ïòmerge¿é¼´¿É
+		//Íê³É¹¦ÄÜ
 		std::cout << "Creating code for WHILE\n";
-		//wlï¿½ï¿½ï¿½ï¿½whileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ÏµÄµï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½Îªï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½
+		//wl¿éÊÇwhileÓï¾äÌõ¼þÅÐ¶ÏµÄµ¥¶ÀÒ»¸ö»ù±¾¿é£¬ÒòÎªÐèÒª±»¶à´ÎÌø×ªµ½´Ë
 		BasicBlock * wl = BasicBlock::Create(MyContext, "wl", curfc);
-		//whileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//whileº¯ÊýÌå
 		BasicBlock * then = BasicBlock::Create(MyContext, "then", curfc);
-		//whileï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//whileÓï¾äºóµÄÓï¾ä
 		BasicBlock * merge = BasicBlock::Create(MyContext, "merge", curfc);
 		
 		builder.CreateBr(wl);
@@ -339,8 +339,8 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		builder.CreateBr(wl);
 		context.popBlock();
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IFï¿½ï¿½ï¿½ï¿½ï¿½mergeï¿½ï¿½Ò²ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ö®Ç°ï¿½Ä·ï¿½ï¿½Å±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½whileÖ®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-		//ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½ß¶ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Í¬ï¿½Ä·ï¿½ï¿½Å£ï¿½ï¿½ï¿½Í¬ï¿½ï¿½Öµ
+		//ÀàËÆÓÚIFÓï¾äºóµÄmerge£¬Ò²ÐèÒª½«ÆäÖ®Ç°µÄ·ûºÅ±í¿½±´µ½whileÖ®ºóµÄÓï¾ä¿éÖÐ
+		//±£Ö¤¶þÕß¶¼ÄÜÓÃµ½ÏàÍ¬µÄ·ûºÅ£¬ÏàÍ¬µÄÖµ
 		std::map<std::string, Value*> nowloc = context.locals();
 		Value* nowret = context.getCurrentReturnValue();
 		context.popBlock();
@@ -348,11 +348,11 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		builder.SetInsertPoint(merge);
 		return nowret;
 	}
-	case TReturnStatement:
+	case ReturnStatementK:
 	{
-		//returnï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½Ãµï¿½Ô­ï¿½ò£¬²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½returnï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-		//ï¿½ï¿½ï¿½Ô½ï¿½Ïºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½ï¿½Ê±ï¿½ï¿½Å·ï¿½ï¿½ï¿½Öµï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Òªï¿½ï¿½Ò»ï¿½ï¿½returnï¿½ï¿½ï¿½
-		//ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä©Î²ï¿½ï¿½exitï¿½é£©ï¿½ï¿½ï¿½ï¿½ï¿½Ò°Ñ·ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//returnÓï¾äÓ¦¸ÃÊÇAPIµ÷ÓÃµÄÔ­Òò£¬²¢²»ÄÜÆðµ½ÕæÕýµÄreturnµÄ×÷ÓÃ
+		//ËùÒÔ½áºÏº¯Êý¶¨ÒåÖÐµÄÁÙÊ±´æ·Å·µ»ØÖµµÄ±äÁ¿£¬ÎÒÃÇÖ»ÐèÒª½«Ò»¸öreturnÓï¾ä
+		//·­Òë³ÉÒ»¸öÎÞÌõ¼þÌø×ª£¨Ìøµ½º¯ÊýÄ©Î²µÄexit¿é£©£¬²¢ÇÒ°Ñ·µ»ØÖµ¸³¸øÁÙÊ±±äÁ¿¼´¿É
 		std::cout << "Creating return code\n";
 		Value *returnValue = codegen(cur->attr.retStmt.expr,context);
 		string name = "this_will_never_been_used";
@@ -361,20 +361,20 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		builder.CreateBr(curret);
 		return returnValue;
 	}
-	case TAssignExpression:
+	case AssignExpressionK:
 	{
-		//ï¿½ï¿½Öµï¿½ï¿½ä£¬ï¿½ï¿½Êµï¿½ï¿½ï¿½Ç¶ï¿½ï¿½Ò±ßµï¿½Ê½ï¿½Ó½ï¿½ï¿½ï¿½codegenï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ãµï¿½ï¿½ï¿½Öµï¿½æµ½ï¿½ï¿½ßµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Çµï¿½ï¿½ï¿½ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Ø£ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½
-		//ï¿½ï¿½ï¿½Â±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½codegen,ï¿½ï¿½arr[x*y]ï¿½ï¿½ï¿½ï¿½Ã´Òªï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½Â±ï¿½Å¿ï¿½ï¿½ï¿½
+		//¸³ÖµÓï¾ä£¬ÆäÊµ¾ÍÊÇ¶ÔÓÒ±ßµÄÊ½×Ó½øÐÐcodegen£¬²¢½«µÃµ½µÄÖµ´æµ½×ó±ßµÄ±äÁ¿ÖÐ
+		//µ«ÊÇÐèÒªÇø·Ö×ó±ßÊÇµ¥´¿µÄ±äÁ¿£¬»¹ÊÇÊý×éÔªËØ£¬Èç¹ûÊÇÊý×éÔªËØ£¬»¹ÐèÒª½«Êý×éÔªËØ
+		//µÄÏÂ±ê½øÐÐÏÈcodegen,Èçarr[x*y]£¬ÄÇÃ´ÒªÏÈÈ·¶¨ÆäÏÂ±ê²Å¿ÉÒÔ
 		std::cout << "Creating assignment for ";
-		//ï¿½Ë´ï¿½×¢ï¿½â£¡Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï£ï¿½ï¿½ï¿½ï¿½ï¿½ÖµÓ¦ï¿½ï¿½ï¿½ï¿½ï¿½Ò±ß±ï¿½ï¿½ï¿½Ê½ï¿½ï¿½Öµï¿½ï¿½Òªï¿½È¼ï¿½Â¼ï¿½ï¿½ï¿½ï¿½
-		//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½storeÖ¸ï¿½ï¿½Ä·ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½Ö·....
+		//´Ë´¦×¢Òâ£¡ÎªÁËÄÜÓÃÁ¬µÈÊ½£¬ÒÔ¼°Ìõ¼þÅÐ¶Ï£¬·µ»ØÖµÓ¦¸ÃÊÇÓÒ±ß±í´ïÊ½µÄÖµ£¬ÒªÏÈ¼ÇÂ¼ÏÂÀ´
+		//·µ»ØÖµ²»Ó¦¸ÃÊÇstoreÖ¸ÁîµÄ·µ»ØÖµ£¬ÄÇÊÇ¸öµØÖ·....
 		Value* tmp = codegen(cur->attr.assignStmt.expr, context);
-		if (cur->attr.assignStmt._var->nodeKind == TVariable)
+		if (cur->attr.assignStmt._var->nodeKind == VariableK)
 		{
 			std::cout << "Variable " << cur->attr.assignStmt._var->attr.ID << '\n';
 			string leftname = cur->attr.assignStmt._var->attr.ID;
-			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßµÄ±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²é¿´ï¿½Ë±ï¿½ï¿½ï¿½ï¿½Ç·ñ±»¶ï¿½ï¿½ï¿½
+			//¼ÓÔØ×ó±ßµÄ±äÁ¿£¬²¢ÇÒ²é¿´´Ë±äÁ¿ÊÇ·ñ±»¶¨Òå
 			Value *lef = context.isexist(leftname);
 			if (lef == NULL)
 			{
@@ -393,18 +393,18 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 				std::cout << "Undeclared array: " << name << '\n';
 				return NULL;
 			}
-			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â±ê£¬ï¿½ï¿½ï¿½Òµï¿½ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½get element ptrï¿½ï¿½APIï¿½ï¿½ï¿½Ó¶ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½Øµï¿½Ö·
+			//¼ÓÔØÊý×éÏÂ±ê£¬²¢ÇÒµ÷ÓÃÏàÓ¦µÄget element ptrµÄAPI£¬´Ó¶ø¼ÓÔØÔªËØµØÖ·
 			Value *pos = codegen(cur->attr.assignStmt._var->attr.arr.arr_expr, context);
 			Value *ele = builder.CreateGEP(arr, pos);
 			StoreInst* st = new StoreInst(tmp, ele, false, context.currentBlock());
 		}
 		return tmp;
 	}
-	case TComparisonExpression:
+	case ComparisonExpressionK:
 	{
-		//ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾ï¿½ï¿½ÇµÝ¹ï¿½Äµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½Óµï¿½codegenï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦APIï¿½ï¿½ï¿½É£ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Òª×¢ï¿½ï¿½Ò»ï¿½ã£¬APIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
-		//ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½Ê±ï¿½Í»á±¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ·ï¿½Ö´ï¿½ï¿½
+		//¹ØÏµÔËËãÓï¾ä£¬Õâ¸ö²¿·Ö¾ÍÊÇµÝ¹éµÄµ÷ÓÃ×óÓÒÁ½±ßÊ½×ÓµÄcodegen£¬²¢ÇÒ
+		//µ÷ÓÃÏàÓ¦API¼´¿É£¬µ«ÊÇÒ»¶¨Òª×¢ÒâÒ»µã£¬APIµÄÁ½¸ö²ÎÊý±ØÐëÀàÐÍÒ»ÖÂ
+		//·ñÔòÔÚ±àÒëÊ±¾Í»á±¨´í£¬µ¼ÖÂÎÞ·¨Ö´ÐÐ
 		std::cout << "Creating CMP operation\n";
 		Value *left = codegen(cur->attr.cmpExpr.lexpr, context);
 		Value *right = codegen(cur->attr.cmpExpr.rexpr, context);
@@ -427,9 +427,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 			exit(0);
 		}
 	}
-	//ï¿½ï¿½ï¿½Æ¹ï¿½Ïµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ç»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
-	case TMultiplicativeExpression:
-	case TAdditiveExpression:
+	//ÀàËÆ¹ØÏµÔËËã·û£¬Ö»ÊÇ»»³ÉÁËËãÊýÔËËã·û
+	case MultiplicativeExpressionK:
+	case AdditiveExpressionK:
 	{
 		fprintf(listing, "Creating MATH operation \n");
 		Instruction::BinaryOps instr;
@@ -448,9 +448,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		return BinaryOperator::Create(instr, codegen(cur->attr.addExpr.lexpr,context),
 			codegen(cur->attr.addExpr.rexpr,context), "", context.currentBlock());
 	}
-	case TArray:
+	case ArrayK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½òµ¥±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â±ï¿½ï¿½codegen
+		//¼ÓÔØÊý×é±äÁ¿£¬±ÈÆð¼òµ¥±äÁ¿£¬¶àÒ»¸öÊý×éÏÂ±êµÄcodegen
 		std::cout << "Creating array identifier reference: " << cur->attr.arr._var->attr.ID << '\n';
 		string name = cur->attr.arr._var->attr.ID;
 		Value *arr = context.isexist(name);
@@ -463,9 +463,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		Value *ele = builder.CreateGEP(arr, pos);
 		return new LoadInst(ele, "", false, context.currentBlock());
 	}
-	case TCall:
+	case CallK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½codegenï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½ï¿½ï¿½Ä°ï¿½ï¿½ï¿½APIï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		//º¯Êýµ÷ÓÃÓï¾äµÄcodegen£¬Ö÷ÒªÊÇÒª¹¹ÔìÒ»¸ö²ÎÊýÁÐ±í£¬±ðµÄ°´ÕÕAPIµ÷ÓÃ¹æÔòÀ´¼´¿É
 		string fname = cur->attr.call._var->attr.ID;
 		Function *function = context.module->getFunction(fname);
 		if (function == NULL) 
@@ -484,9 +484,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		std::cout << "Created method call: " << cur->attr.call._var->attr.ID << '\n';
 		return call;
 	}
-	case TVariable:
+	case VariableK:
 	{
-		//ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½
+		//¼ÓÔØ±äÁ¿
 		std::cout << "Creating identifier reference: " << cur->attr.ID <<'\n';
 		string name = cur->attr.ID;
 		Value *arg = context.isexist(name);
@@ -497,9 +497,9 @@ Value* codegen(TreeNode *cur, CodeGenContext& context)
 		}
 		return new LoadInst(arg, "", false, context.currentBlock());
 	}
-	case TConstant:
+	case ConstantK:
 	{
-		//ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½Ò»ï¿½ï¿½intï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½Ãµï¿½Ò»ï¿½ï¿½llvm irï¿½ï¿½ï¿½Ãµï¿½Valueï¿½ï¿½ï¿½ï¿½Öµ
+		//³£Á¿Öµ£¬¼´´ÓCÓïÑÔÖÐµÄÒ»¸öintÀàÐÍÖµ£¬µÃµ½Ò»¸öllvm irÖÐÓÃµÄValueÀàÐÍÖµ
 		std::cout << "Creating integer: " << cur->attr.NUM <<'\n';
 		return ConstantInt::get(Type::getInt64Ty(MyContext), cur->attr.NUM, true);
 	}
