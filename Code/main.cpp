@@ -17,18 +17,22 @@ void createCoreFunctions(CodeGenContext& context);
 
 int main(int argc, char **argv)
 {
-	listing = stdout; 	  //Êä³öµ½ÆÁÄ»£¬¿É¸Ä³ÉÎÄ¼ş 
+	listing = stdout; 	  //è¾“å‡ºåˆ°å±å¹•ï¼Œå¯æ”¹æˆæ–‡ä»¶ 
 	char pgm[120];
+	string testNum;
+	string filename = "../Test/test";
 	cout << "Please input file name\n";
-	cin >> pgm;
-	source = fopen(pgm, "r");
+//	cin >> pgm;
+	cin >> testNum;
+	filename = filename.append(testNum).append("/test").append(testNum).append(".txt");
+	source = fopen(filename.c_str(), "r");
 	if (source == NULL)
 	{
 		fprintf(listing, "File %s not found\n", pgm);
 		exit(0);
 	}
 
-	syntaxTree = parse();   //µ÷ÓÃĞ´ÔÚcm.yÀïµÄparse()º¯Êı½øĞĞ¹¹ÔìÓï·¨·ÖÎöÊ÷ 
+	syntaxTree = parse();   //è°ƒç”¨å†™åœ¨cm.yé‡Œçš„parse()å‡½æ•°è¿›è¡Œæ„é€ è¯­æ³•åˆ†ææ ‘ 
 	fprintf(listing, "**********\nSyntax tree:\n**********\n");
 	printTree(syntaxTree, 0, 1);
 	fclose(source);

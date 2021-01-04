@@ -63,7 +63,7 @@ whitespace  [ \t]+
 {number}            { return NUM; }
 {identifier}        { return ID; }
 {newline}           { lineno++; }
-{whitespace}        { /* skip whitespace */ }
+{whitespace}        { /* 跳过空白 */ }
 
 %%
 
